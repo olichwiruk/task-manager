@@ -1,11 +1,11 @@
-mod template;
-mod task;
+mod views;
+mod domain;
 
 use axum::{response::IntoResponse, routing::{get, post}, Form};
-use template::{HtmlTemplate, IndexTemplate};
+use views::templates::{HtmlTemplate, IndexTemplate};
 use tokio::net::TcpListener;
 
-use crate::task::TaskForm;
+use crate::domain::task::TaskForm;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
