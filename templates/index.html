@@ -33,6 +33,8 @@
           <form
             class="flex flex-col md:flex-row gap-4 md:gap-3"
             hx-post="/tasks"
+            hx-target="#task-list"
+            onsubmit="setTimeout(() => this.reset(), 1)"
           >
             <input
               type="text"
@@ -55,6 +57,13 @@
           </form>
         </div>
       </div>
+
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body p-4 md:p-6">
+          <ul class="space-y-3 list bg-base-100" id="task-list" hx-get="/tasks" hx-trigger="load" hx-swap="innerHTML">
+            <!-- Task items will be dynamically loaded here -->
+          </ul>
+        </div>
     </div>
   </body>
 </html>

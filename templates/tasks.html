@@ -1,0 +1,19 @@
+{% for task in tasks %}
+<li class="list-row items-center mb-0" key="{{ task.id }}">
+  <div class="list-col-grow">
+    <span>{{ task.description }}</span>
+  </div>
+  <div>
+    {% if let Some(priority) = task.priority %}
+      <span class="badge badge-sm
+        {% match priority.as_str() %}
+          {% when "low" %} badge-info text-info-content
+          {% when "medium" %} badge-warning text-warning-content
+          {% when "high" %} badge-error text-error-content
+          {% else %} badge-default text-default-content
+        {% endmatch %}
+      "> {{ task.priority_text.as_ref().unwrap() }} </span>
+    {% endif %}
+  </div>
+</li>
+{% endfor %}

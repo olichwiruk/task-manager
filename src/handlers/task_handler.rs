@@ -6,6 +6,7 @@ use serde::Deserialize;
 use crate::{
     app::state::AppState,
     domain::task::{NewTask, TaskPriority, TaskRepository},
+    views::{HtmlTemplate, tasks::TasksTemplate},
 };
 
 #[derive(Deserialize)]
@@ -27,5 +28,17 @@ pub async fn add_task(
         .insert(new_task)
         .await
         .expect("Failed to insert task");
-    "Task added"
+
+    get_tasks(State(state)).await
+}
+
+pub async fn get_tasks(
+    State(state): State<Arc<AppState>>,
+) -> impl IntoResponse {
+    let task_repo: &dyn TaskRepository = &*state.repository;
+    let tasks = task_repo.get_all().await.expect("Failed to fetch tasks");
+
+    HtmlTemplate(TasksTemplate {
+        tasks: tasks.into_iter().map(|t| t.into()).collect(),
+    })
 }

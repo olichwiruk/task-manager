@@ -11,7 +11,7 @@ pub struct Task {
     pub priority: Option<TaskPriority>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, Debug)]
 pub enum TaskPriority {
     #[serde(rename = "low")]
     Low,
