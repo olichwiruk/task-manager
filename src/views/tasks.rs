@@ -1,12 +1,13 @@
 use askama::Template;
 
-use crate::domain::task::{Task, TaskPriority};
+use crate::domain::task::{Task, TaskPriority, TaskStatus};
 
 pub struct TaskViewModel {
     pub id: i32,
     pub description: String,
     pub priority: Option<TaskPriority>,
     pub priority_text: Option<String>,
+    pub status: TaskStatus,
 }
 
 impl From<Task> for TaskViewModel {
@@ -16,6 +17,7 @@ impl From<Task> for TaskViewModel {
             description: task.description.clone(),
             priority: task.priority.clone(),
             priority_text: task.priority.map(|p| format!("{:?}", p)),
+            status: task.status.clone(),
         }
     }
 }

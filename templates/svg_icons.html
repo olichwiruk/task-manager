@@ -1,0 +1,42 @@
+{% macro todo_icon(size=20, class="") %}
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="{{ size }}"
+  height="{{ size }}"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  class="{{ class }}"
+>
+  <circle cx="12" cy="12" r="10"></circle>
+</svg>
+{% endmacro %} {% macro in_progress_icon(size=20, class="text-secondary") %}
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="{{ size }}"
+  height="{{ size }}"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  class="{{ class }}"
+>
+  <circle cx="12" cy="12" r="10"></circle>
+  <path d="M12 2a10 10 0 0 1 10 10"></path>
+</svg>
+{% endmacro %} {% macro completed_icon(size=20, class="text-success") %}
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="{{ size }}"
+  height="{{ size }}"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  class="{{ class }}"
+>
+  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+</svg>
+{% endmacro %}

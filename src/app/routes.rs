@@ -1,4 +1,7 @@
-use axum::{Router, routing::get};
+use axum::{
+    Router,
+    routing::{get, patch},
+};
 use std::sync::Arc;
 
 use crate::app::state::AppState;
@@ -13,5 +16,6 @@ pub fn create_router(state: AppState) -> Router {
             "/tasks",
             get(task_handler::get_tasks).post(task_handler::add_task),
         )
+        .route("/tasks/{id}", patch(task_handler::update_task))
         .with_state(shared_state)
 }

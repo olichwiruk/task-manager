@@ -16,9 +16,10 @@ impl SqlxRepository {
 impl TaskRepository for SqlxRepository {
     async fn insert(&self, new_task: NewTask) -> Result<Task, ()> {
         let rec = sqlx::query!(
-            "INSERT INTO tasks (description, priority) VALUES ($1, $2) RETURNING id, description, priority",
+            "INSERT INTO tasks (description, priority, status) VALUES ($1, $2, $3) RETURNING id, description, priority, status",
             new_task.description,
-            new_task.priority.as_ref().map(|p| p.as_str())
+            new_task.priority.as_ref().map(|p| p.as_str()),
+            new_task.status.as_str()
         )
         .fetch_one(&self.pool)
         .await
@@ -33,15 +34,17 @@ impl TaskRepository for SqlxRepository {
                 "high" => Some(TaskPriority::High),
                 _ => None,
             }),
+            status: new_task.status,
         })
     }
 
     async fn update(&self, task: Task) -> Result<Task, ()> {
         let rec = sqlx::query!(
-            "UPDATE tasks SET description = $1, priority = $2 WHERE id = $3 RETURNING id, description, priority",
+            "UPDATE tasks SET description = $2, priority = $3, status = $4 WHERE id = $1 RETURNING id, description, priority, status",
+            task.id,
             task.description,
             task.priority.as_ref().map(|p| p.as_str()),
-            task.id
+            task.status.as_str(),
         )
         .fetch_one(&self.pool)
         .await
@@ -56,15 +59,17 @@ impl TaskRepository for SqlxRepository {
                 "high" => Some(TaskPriority::High),
                 _ => None,
             }),
+            status: task.status,
         })
     }
 
     async fn get_all(&self) -> Result<Vec<Task>, ()> {
-        let records =
-            sqlx::query!("SELECT id, description, priority FROM tasks")
-                .fetch_all(&self.pool)
-                .await
-                .map_err(|_| ())?;
+        let records = sqlx::query!(
+            "SELECT id, description, priority, status FROM tasks ORDER BY id"
+        )
+        .fetch_all(&self.pool)
+        .await
+        .map_err(|_| ())?;
 
         Ok(records
             .into_iter()
@@ -77,13 +82,14 @@ impl TaskRepository for SqlxRepository {
                     "high" => Some(TaskPriority::High),
                     _ => None,
                 }),
+                status: rec.status.as_str().into(),
             })
             .collect())
     }
 
     async fn get_by_id(&self, id: i32) -> Result<Option<Task>, ()> {
         let record = sqlx::query!(
-            "SELECT id, description, priority FROM tasks WHERE id = $1",
+            "SELECT id, description, priority, status FROM tasks WHERE id = $1",
             id
         )
         .fetch_optional(&self.pool)
@@ -100,6 +106,7 @@ impl TaskRepository for SqlxRepository {
                     "high" => Some(TaskPriority::High),
                     _ => None,
                 }),
+                status: record.status.as_str().into(),
             }))
         } else {
             Ok(None)

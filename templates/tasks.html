@@ -1,7 +1,39 @@
+{%- import "svg_icons.html" as icons -%}
+
 {% for task in tasks %}
-<li class="list-row items-center mb-0" key="{{ task.id }}">
+<li class="list-row items-center mb-0 hover:bg-neutral" key="{{ task.id }}">
+  <div class="dropdown dropdown-hover">
+    <div tabindex="0" role="button" class="btn btn-ghost btn-circle btn-xs">
+      {% match task.status.as_str() %}
+        {% when "todo" %} {% call icons::todo_icon %}
+        {% when "in_progress" %} {% call icons::in_progress_icon %}
+        {% when "completed" %} {% call icons::completed_icon %}
+        {% else %} {% call icons::todo_icon %}
+      {% endmatch %}
+    </div>
+    <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
+      <li>
+        <button hx-patch="/tasks/{{task.id}}" hx-vals='{"status": "todo"}' hx-target="#task-list">
+          {% call icons::todo_icon(16) %}
+        </button>
+      </li>
+      <li>
+        <button hx-patch="/tasks/{{task.id}}" hx-vals='{"status": "in_progress"}' hx-target="#task-list">
+          {% call icons::in_progress_icon(16) %}
+        </button>
+      </li>
+      <li>
+        <button hx-patch="/tasks/{{task.id}}" hx-vals='{"status": "completed"}' hx-target="#task-list">
+          {% call icons::completed_icon(16) %}
+        </button>
+      </li>
+    </ul>
+  </div>
+
   <div class="list-col-grow">
-    <span>{{ task.description }}</span>
+    <span class="{% if task.status.as_str() == "completed" %} line-through text-muted text-base-content/50 {% endif %}">
+      {{ task.description }}
+    </span>
   </div>
   <div>
     {% if let Some(priority) = task.priority %}
