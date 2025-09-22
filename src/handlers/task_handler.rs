@@ -6,6 +6,7 @@ use axum::{
     response::IntoResponse,
 };
 use serde::Deserialize;
+use validator::Validate;
 
 use crate::{
     app::state::AppState,
@@ -13,19 +14,24 @@ use crate::{
     views::{HtmlTemplate, tasks::TasksTemplate},
 };
 
-#[derive(Deserialize)]
-pub struct TaskForm {
+#[derive(Deserialize, Validate)]
+pub struct AddTaskFormData {
+    #[validate(length(min = 1, max = 80))]
     pub description: String,
-    pub priority: TaskPriority,
+    pub priority: Option<TaskPriority>,
 }
 
 pub async fn add_task(
     State(state): State<Arc<AppState>>,
-    form: Form<TaskForm>,
+    form: Form<AddTaskFormData>,
 ) -> impl IntoResponse {
+    if form.validate().is_err() {
+        return get_tasks(State(state)).await;
+    }
+
     let task_repo: &dyn TaskRepository = &*state.repository;
     let new_task =
-        NewTask::new(form.description.clone(), Some(form.priority.clone()));
+        NewTask::new(form.description.clone(), form.priority.clone());
     task_repo
         .insert(new_task)
         .await

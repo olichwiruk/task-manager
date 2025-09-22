@@ -11,3 +11,4 @@ dotenvy = "0.15.7"
 serde = { version = "1.0.226", features = ["derive"] }
 sqlx = { version = "0.8.6", features = ["runtime-tokio-native-tls", "postgres", "macros"] }
 tokio = { version = "1.47.1", features = ["full"] }
+validator = { version = "0.20.0", features = ["derive"] }
