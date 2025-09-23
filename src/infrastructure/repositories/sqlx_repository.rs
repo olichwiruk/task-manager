@@ -1,6 +1,9 @@
 use sqlx::PgPool;
 
-use crate::domain::{task::{NewTask, Task, TaskPriority, TaskRepository}, user::{NewUser, User, UserRepository}};
+use crate::domain::{
+    task::{NewTask, Task, TaskPriority, TaskRepository},
+    user::{NewUser, User, UserRepository},
+};
 
 pub struct SqlxRepository {
     pool: PgPool,
@@ -182,6 +185,29 @@ impl UserRepository for SqlxRepository {
         let record = sqlx::query!(
             "SELECT id, username, hashed_password FROM users WHERE id = $1",
             id
+        )
+        .fetch_optional(&self.pool)
+        .await
+        .map_err(|_| ())?;
+
+        if let Some(record) = record {
+            Ok(Some(User {
+                id: record.id,
+                username: record.username,
+                hashed_password: record.hashed_password,
+            }))
+        } else {
+            Ok(None)
+        }
+    }
+
+    async fn get_by_username(
+        &self,
+        username: &str,
+    ) -> Result<Option<User>, ()> {
+        let record = sqlx::query!(
+            "SELECT id, username, hashed_password FROM users WHERE username = $1",
+            username
         )
         .fetch_optional(&self.pool)
         .await

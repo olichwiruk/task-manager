@@ -29,4 +29,21 @@ impl AuthService {
 
         Ok(())
     }
+
+    pub async fn authenticate_user(
+        &self,
+        username: String,
+        password: String,
+    ) -> Result<(), ()> {
+        let user = self.user_repo.get_by_username(&username).await?;
+
+        if let Some(user) = user
+            && bcrypt::verify(password, &user.hashed_password)
+                .map_err(|_| ())?
+        {
+            return Ok(());
+        }
+
+        Err(())
+    }
 }

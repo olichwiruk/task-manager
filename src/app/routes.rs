@@ -20,5 +20,9 @@ pub fn create_router(state: AppState) -> Router {
         )
         .route("/tasks/{id}", patch(task_handler::update_task))
         .route("/register", post(user_handler::register))
+        .route(
+            "/login",
+            get(handlers::login_page).post(user_handler::login),
+        )
         .with_state(shared_state)
 }

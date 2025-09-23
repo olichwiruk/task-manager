@@ -8,6 +8,10 @@ use axum::response::{Html, IntoResponse, Response};
 #[template(path = "index.html")]
 pub struct IndexTemplate {}
 
+#[derive(Template)]
+#[template(path = "login.html")]
+pub struct LoginTemplate {}
+
 pub struct HtmlTemplate<T>(pub T);
 
 impl<T> IntoResponse for HtmlTemplate<T>

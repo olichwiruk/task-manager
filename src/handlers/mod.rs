@@ -1,9 +1,13 @@
 pub mod task_handler;
 pub mod user_handler;
 
+use crate::views::{HtmlTemplate, IndexTemplate, LoginTemplate};
 use axum::response::IntoResponse;
-use crate::views::{HtmlTemplate, IndexTemplate};
 
 pub async fn index() -> impl IntoResponse {
     HtmlTemplate(IndexTemplate {})
+}
+
+pub async fn login_page() -> impl IntoResponse {
+    HtmlTemplate(LoginTemplate {})
 }
