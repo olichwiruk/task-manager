@@ -2,6 +2,7 @@ mod app;
 mod domain;
 mod handlers;
 mod infrastructure;
+mod services;
 mod views;
 
 use dotenvy::dotenv;

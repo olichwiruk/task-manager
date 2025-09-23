@@ -6,7 +6,7 @@ use std::sync::Arc;
 
 use crate::{
     app::state::AppState,
-    domain::user::{NewUser, UserRepository},
+    domain::user::UserRepository,
 };
 
 #[derive(Deserialize)]
@@ -19,18 +19,12 @@ pub async fn register(
     State(state): State<Arc<AppState>>,
     user_data: Json<RegisterUserData>,
 ) -> impl IntoResponse {
-    let user_repo: &dyn UserRepository = &*state.repository;
+    let auth_service = &state.auth_service;
 
-    let hashed_password = hash(user_data.password.clone(), DEFAULT_COST)
-        .expect("Failed to hash password");
-    let new_user = NewUser {
-        username: user_data.username.clone(),
-        hashed_password,
-    };
-    user_repo
-        .insert(new_user)
+    auth_service
+        .register_user(user_data.username.clone(), user_data.password.clone())
         .await
-        .expect("Failed to insert task");
+        .expect("Failed to register user");
 
     Json(json!({"status": "success"}))
 }
