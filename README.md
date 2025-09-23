@@ -2,6 +2,10 @@
 
 A sample task management application built with Rust, showcasing server-side rendering and a clean architecture design.
 
+## Live Demo
+
+Check out the [live demo](https://task-manager.olichwir.uk/) to see the application in action.
+
 ## Tech Stack
 
 - **Backend**: Rust with Axum web framework
