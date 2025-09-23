@@ -22,7 +22,9 @@ async fn main() -> std::io::Result<()> {
     let app_state = app::state::AppState::new(pool);
     let app = app::routes::create_router(app_state);
 
-    let listener = TcpListener::bind("127.0.0.1:3000").await?;
+    let host = env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
+    let port = env::var("PORT").unwrap_or_else(|_| "3000".to_string());
+    let listener = TcpListener::bind(format!("{}:{}", host, port)).await?;
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await?;
 
