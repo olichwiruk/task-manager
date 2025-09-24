@@ -1,7 +1,7 @@
 use axum::{
     Form, Json,
     extract::State,
-    http::{Response, StatusCode, header},
+    http::{StatusCode, header},
     response::IntoResponse,
 };
 use cookie::{Cookie, SameSite};
@@ -74,4 +74,24 @@ pub async fn login(
         )
             .into_response()
     }
+}
+
+pub async fn logout() -> impl IntoResponse {
+    let cookie = Cookie::build(("jwt", ""))
+        .http_only(true)
+        .secure(true)
+        .same_site(SameSite::Lax)
+        .path("/")
+        .max_age(cookie::time::Duration::ZERO)
+        .build();
+
+    (
+        StatusCode::SEE_OTHER,
+        [
+            (header::SET_COOKIE, cookie.to_string()),
+            (header::LOCATION, "/".to_string()),
+        ],
+        "",
+    )
+        .into_response()
 }

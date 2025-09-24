@@ -16,12 +16,16 @@ pub fn create_router(state: AppState) -> Router {
 
     let protected_routes = Router::new()
         .route("/", get(handlers::index))
+        .route("/logout", get(user_handler::logout))
         .route(
             "/tasks",
             get(task_handler::get_tasks).post(task_handler::add_task),
         )
         .route("/tasks/{id}", patch(task_handler::update_task))
-        .layer(middleware::from_fn_with_state(shared_state.clone(), auth_middleware));
+        .layer(middleware::from_fn_with_state(
+            shared_state.clone(),
+            auth_middleware,
+        ));
 
     Router::new()
         .route("/register", post(user_handler::register))
