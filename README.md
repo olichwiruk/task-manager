@@ -28,12 +28,12 @@ Contains the core business logic and entities:
 - `domain/user.rs`: User entity definition and associated logic
 
 ### Application Layer
-Implements use cases that coordinate the flow of data
+Implements use cases that coordinate the flow of data:
+- `services/auth_service.rs`: Authentication service implementation
 
 ### Presentation Layer
 Manages the interface between the system and users:
 - `views/tasks.rs`: Task view logic
-- `views/users.rs`: User view logic
 - `templates/*.html`: HTML templates rendered with Askama
 
 ### Infrastructure Layer
@@ -46,7 +46,7 @@ Provides technical capabilities that support higher layers:
 
 ## Implemented Features
 
-- **User Authentication**: Registration functionality with password hashing
+- **User Authentication**: Registration, login with JWT-based authentication
 - **Task Management**: Create, read, update, and delete tasks
 - **Server-Side Rendering**: HTML generated on the server using Askama templates
 - **Database Integration**: PostgreSQL with SQLx for type-safe queries
@@ -87,6 +87,7 @@ Provides technical capabilities that support higher layers:
 2. Create a `.env` file with the following variables:
    ```
    DATABASE_URL=postgres://username:password@localhost/task_manager
+   JWT_SECRET=your_jwt_secret
    ```
 3. Run database migrations:
    ```
