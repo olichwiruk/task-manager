@@ -1,3 +1,4 @@
+pub mod auth;
 pub mod task_handler;
 pub mod user_handler;
 

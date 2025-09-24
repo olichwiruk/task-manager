@@ -1,6 +1,10 @@
 use axum::{
-    Form, Json, extract::State, http::StatusCode, response::IntoResponse,
+    Form, Json,
+    extract::State,
+    http::{Response, StatusCode, header},
+    response::IntoResponse,
 };
+use cookie::{Cookie, SameSite};
 use serde::Deserialize;
 use serde_json::json;
 use std::sync::Arc;
@@ -46,8 +50,23 @@ pub async fn login(
         )
         .await;
 
-    if authentication_result.is_ok() {
-        (StatusCode::OK, [("HX-Redirect", "/")], "").into_response()
+    if let Ok(jwt) = authentication_result {
+        let cookie = Cookie::build(("jwt", jwt))
+            .http_only(true)
+            .secure(true)
+            .same_site(SameSite::Lax)
+            .path("/")
+            .build();
+
+        (
+            StatusCode::OK,
+            [
+                (header::SET_COOKIE.to_string(), cookie.to_string()),
+                ("HX-Redirect".to_string(), "/".to_owned()),
+            ],
+            "",
+        )
+            .into_response()
     } else {
         (
             StatusCode::UNAUTHORIZED,
